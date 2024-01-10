@@ -128,16 +128,7 @@ class MyGame(arcade.Window):
        pass
 
    def on_key_press(self, key, key_modifiers):
-       """
-       Cette méthode est invoquée à chaque fois que l'usager tape une touche
-       sur le clavier.
-       Paramètres:
-           - key: la touche enfoncée
-           - key_modifiers: est-ce que l'usager appuie sur "shift" ou "ctrl" ?
 
-       Pour connaître la liste des touches possibles:
-       http://arcade.academy/arcade.key.html
-       """
        GameState.NOT_STARTED
 
    def reset_round(self):
