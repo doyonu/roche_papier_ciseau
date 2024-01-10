@@ -4,7 +4,7 @@ import random
 import arcade
 #import arcade.gui
 
-#from attack_animation import AttackType, AttackAnimation
+from attack_animation import AttackType, AttackAnimation
 from game_state import GameState
 
 SCREEN_WIDTH = 1024
@@ -94,13 +94,7 @@ class MyGame(arcade.Window):
        pass
 
    def on_draw(self):
-       """
-       C'est la méthode que Arcade invoque à chaque "frame" pour afficher les éléments
-       de votre jeu à l'écran.
-       """
 
-       # Cette commande permet d'effacer l'écran avant de dessiner. Elle va dessiner l'arrière
-       # plan selon la couleur spécifié avec la méthode "set_background_color".
        arcade.start_render()
 
        # Display title
@@ -116,19 +110,18 @@ class MyGame(arcade.Window):
        self.players.draw()
        self.draw_possible_attack()
        self.draw_scores()
-
+       self.rock.draw()
+       self.paper.draw()
+       self.scissors.draw()
        #afficher l'attaque de l'ordinateur selon l'état de jeu
        #afficher le résultat de la partie si l'ordinateur a joué (ROUND_DONE)
        pass
 
    def on_update(self, delta_time):
-       """
-       Toute la logique pour déplacer les objets de votre jeu et de
-       simuler sa logique vont ici. Normalement, c'est ici que
-       vous allez invoquer la méthode "update()" sur vos listes de sprites.
-       Paramètre:
-           - delta_time : le nombre de milliseconde depuis le dernier update.
-       """
+
+       self.rock.update()
+       self.paper.update()
+       self.scissors.update()
        #vérifier si le jeu est actif (ROUND_ACTIVE) et continuer l'animation des attaques
        #si le joueur a choisi une attaque, générer une attaque de l'ordinateur et valider la victoire
        #changer l'état de jeu si nécessaire (GAME_OVER)
