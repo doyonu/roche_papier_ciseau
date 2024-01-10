@@ -1,20 +1,16 @@
-"""
-Modèle de départ pour la programmation Arcade.
-Il suffit de modifier les méthodes nécessaires à votre jeu.
-"""
-import random
+#Ulysse Doyon
 
+import random
 import arcade
 #import arcade.gui
 
 #from attack_animation import AttackType, AttackAnimation
-#from game_state import GameState
+from game_state import GameState
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Roche, papier, ciseaux"
-DEFAULT_LINE_HEIGHT = 45  # The default line height for text.
-
+DEFAULT_LINE_HEIGHT = 45
 
 class MyGame(arcade.Window):
    """
@@ -39,9 +35,9 @@ class MyGame(arcade.Window):
        self.player = None
        self.computer = None
        self.players = None
-       self.rock = None
-       self.paper = None
-       self.scissors = None
+       self.rock = AttackAnimation(AttackType.ROCK)
+       self.paper = AttackAnimation(AttackType.PAPER)
+       self.scissors = AttackAnimation(AttackType.SCISSORS)
        self.player_score = 0
        self.computer_score = 0
        self.player_attack_type = {}
@@ -149,7 +145,7 @@ class MyGame(arcade.Window):
        Pour connaître la liste des touches possibles:
        http://arcade.academy/arcade.key.html
        """
-       pass
+       GameState.NOT_STARTED
 
    def reset_round(self):
        """
@@ -174,7 +170,8 @@ class MyGame(arcade.Window):
 
        # Test de collision pour le type d'attaque (self.player_attack_type).
        # Rappel que si le joueur choisi une attaque, self.player_attack_chosen = True
-       pass
+       if self.Sprite.collides_with_point((x, y)):
+           print("L'usager a cliqué sur le sprite.")
 
 
 def main():
