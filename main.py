@@ -7,8 +7,8 @@ import arcade
 from attack_animation import AttackType, AttackAnimation
 from game_state import GameState
 
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Roche, papier, ciseaux"
 DEFAULT_LINE_HEIGHT = 45
 
@@ -128,8 +128,17 @@ class MyGame(arcade.Window):
        pass
 
    def on_key_press(self, key, key_modifiers):
+       GameState.NOT_STARTED = True
+       if key == arcade.key.SPACE:
+           if GameState.NOT_STARTED == True:
+               GameState.ROUND_ACTIVE = True
+               GameState.NOT_STARTED = False
+           elif GameState.ROUND_DONE == True:
+               GameState.ROUND_ACTIVE = True
+               GameState.ROUND_DONE = False
 
-       GameState.NOT_STARTED
+
+
 
    def reset_round(self):
        """
@@ -159,7 +168,6 @@ class MyGame(arcade.Window):
 
 
 def main():
-   """ Main method """
    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
    game.setup()
    arcade.run()
