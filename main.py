@@ -11,6 +11,7 @@ SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Roche, papier, ciseaux"
 DEFAULT_LINE_HEIGHT = 45
+PLAYERS_SCALE = 0.25
 
 class MyGame(arcade.Window):
    """
@@ -34,7 +35,6 @@ class MyGame(arcade.Window):
 
        self.player = None
        self.computer = None
-       self.players = None
        self.rock = AttackAnimation(AttackType.ROCK)
        self.paper = AttackAnimation(AttackType.PAPER)
        self.scissors = AttackAnimation(AttackType.SCISSORS)
@@ -48,14 +48,16 @@ class MyGame(arcade.Window):
        self.game_state = None
 
    def setup(self):
-       """
-       Configurer les variables de votre jeu ici. Il faut appeler la méthode une nouvelle
-       fois si vous recommencer une nouvelle partie.
-       """
-       # C'est ici que vous allez créer vos listes de sprites et vos sprites.
-       # Prenez note que vous devriez attribuer une valeur à tous les attributs créés dans __init__
 
-       pass
+       #self.player_list = arcade.SpriteList()
+       #self.computer_list = arcade.SpriteList()
+
+       self.player = arcade.Sprite("assets/faceBeard.png", PLAYERS_SCALE)
+       self.player.center_x = 100
+       self.player.center_y = 300
+       self.computer = arcade.Sprite("assets/compy.png")
+       self.computer.center_x = 300
+       self.computer.center_y = 300
 
 
 
@@ -106,13 +108,14 @@ class MyGame(arcade.Window):
                         width=SCREEN_WIDTH,
                         align="center")
 
-       self.draw_instructions()
-       self.players.draw()
-       self.draw_possible_attack()
-       self.draw_scores()
-       self.rock.draw()
-       self.paper.draw()
-       self.scissors.draw()
+       self.player.draw()
+       self.computer.draw()
+       #self.draw_instructions()
+       #self.draw_possible_attack()
+       #self.draw_scores()
+       #self.rock.draw()
+       #self.paper.draw()
+       #self.scissors.draw()
        #afficher l'attaque de l'ordinateur selon l'état de jeu
        #afficher le résultat de la partie si l'ordinateur a joué (ROUND_DONE)
        pass
@@ -136,7 +139,11 @@ class MyGame(arcade.Window):
            elif GameState.ROUND_DONE == True:
                GameState.ROUND_ACTIVE = True
                GameState.ROUND_DONE = False
-
+           elif GameState.GAME_OVER == True:
+               GameState.GAME_OVER = False
+               GameState.ROUND_ACTIVE = True
+               GameState.ROUND_DONE = False
+               GameState.NOT_STARTED = False
 
 
 
@@ -153,18 +160,20 @@ class MyGame(arcade.Window):
        pass
 
    def on_mouse_press(self, x, y, button, key_modifiers):
-       """
-       Méthode invoquée lorsque l'usager clique un bouton de la souris.
-       Paramètres:
-           - x, y: coordonnées où le bouton a été cliqué
-           - button: le bouton de la souris appuyé
-           - key_modifiers: est-ce que l'usager appuie sur "shift" ou "ctrl" ?
-       """
 
-       # Test de collision pour le type d'attaque (self.player_attack_type).
+
        # Rappel que si le joueur choisi une attaque, self.player_attack_chosen = True
-       if self.Sprite.collides_with_point((x, y)):
+       if self.player.collides_with_point((x, y)):
            print("L'usager a cliqué sur le sprite.")
+       if self.rock.collides_with_point((x, y)):
+           self.player_attack_type = AttackType.ROCK
+           self.player_attack_chosen = True
+       if self.paper.collides_with_point((x, y)):
+           self.player_attack_type = AttackType.PAPER
+           self.player_attack_chosen = True
+       if self.scissors.collides_with_point((x, y)):
+           self.player_attack_type = AttackType.SCISSORS
+           self.player_attack_chosen = True
 
 
 def main():
