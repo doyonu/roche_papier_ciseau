@@ -13,16 +13,17 @@ SCREEN_TITLE = "Roche, papier, ciseaux"
 DEFAULT_LINE_HEIGHT = 45
 PLAYERS_SCALE = 0.25
 
+
 class MyGame(arcade.Window):
 
-   PLAYER_IMAGE_X = (SCREEN_WIDTH / 2) - (SCREEN_WIDTH / 4)
-   PLAYER_IMAGE_Y = SCREEN_HEIGHT / 2.5
-   COMPUTER_IMAGE_X = (SCREEN_WIDTH / 2) * 1.5
-   COMPUTER_IMAGE_Y = SCREEN_HEIGHT / 2.5
-   ATTACK_FRAME_WIDTH = 154 / 2
-   ATTACK_FRAME_HEIGHT = 154 / 2
+    PLAYER_IMAGE_X = (SCREEN_WIDTH / 2) - (SCREEN_WIDTH / 4)
+    PLAYER_IMAGE_Y = SCREEN_HEIGHT / 2.5
+    COMPUTER_IMAGE_X = (SCREEN_WIDTH / 2) * 1.5
+    COMPUTER_IMAGE_Y = SCREEN_HEIGHT / 2.5
+    ATTACK_FRAME_WIDTH = 154 / 2
+    ATTACK_FRAME_HEIGHT = 154 / 2
 
-   def __init__(self, width, height, title):
+    def __init__(self, width, height, title):
        super().__init__(width, height, title)
 
        arcade.set_background_color(arcade.color.BLACK_OLIVE)
@@ -40,8 +41,9 @@ class MyGame(arcade.Window):
        self.player_won_round = None
        self.draw_round = None
        self.game_state = None
+       self.game_state = GameState.NOT_STARTED
 
-   def setup(self):
+    def setup(self):
 
        #self.player_list = arcade.SpriteList()
        #self.computer_list = arcade.SpriteList()
@@ -66,27 +68,31 @@ class MyGame(arcade.Window):
        self.scissors.center_x = 458
        self.scissors.center_y = 170
 
-
-   def validate_victory(self):
+    def validate_victory(self):
 
        if self.game_state == GameState.ROUND_DONE:
            if self.player_attack_type == self.computer_attack_type:
                print("draw")
            elif self.player_attack_type == AttackType.ROCK and self.computer_attack_type == AttackType.SCISSORS:
                print("player win")
+               self.player_score += 1
            elif self.player_attack_type == AttackType.ROCK and self.computer_attack_type == AttackType.PAPER:
                print("compi win")
+               self.computer_score += 1
            elif self.player_attack_type == AttackType.PAPER and self.computer_attack_type == AttackType.ROCK:
                print("player win")
+               self.player_score += 1
            elif self.player_attack_type == AttackType.PAPER and self.computer_attack_type == AttackType.SCISSORS:
                print("compi win")
+               self.computer_score += 1
            elif self.player_attack_type == AttackType.SCISSORS and self.computer_attack_type == AttackType.PAPER:
                print("player win")
+               self.player_score += 1
            elif self.player_attack_type ==AttackType.SCISSORS and self.computer_attack_type == AttackType.ROCK:
                print("compi win")
+               self.computer_score += 1
 
-
-   def draw_possible_attack(self):
+    def draw_possible_attack(self):
 
        if self.player_attack_chosen == True:
            if self.player_attack_type == AttackType.ROCK:
@@ -111,8 +117,7 @@ class MyGame(arcade.Window):
            self.scissors.draw()
            arcade.draw_rectangle_outline(458, 170, 154, 154, arcade.color.DARK_RED, 3, 0)
 
-
-   def draw_computer_attack(self):
+    def draw_computer_attack(self):
 
         if self.computer_attack_type == AttackType.ROCK:
            #print("rock")
@@ -127,30 +132,28 @@ class MyGame(arcade.Window):
             self.scissors.draw()
             self.scissors.center_x = 1000
 
-
-   def draw_scores(self):
-
-       arcade.draw_text("player:"self.player_score"\ncomputer:"self.computer_score,
-                        0,
-                        SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,
-                        arcade.color.CAMOUFLAGE_GREEN,
-                        50,
-                        width=SCREEN_WIDTH,
-                        align="center")
-
-
-   def draw_instructions(self):
-
-       arcade.draw_text("Appuyer sur une image pour faire une attaque!",
+    def draw_scores(self):
+       score = "player: "+str(self.player_score)+" computer: "+str(self.computer_score)
+       arcade.draw_text(score,
                         0,
                         SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4,
-                        arcade.color.PALE_AQUA,
+                        arcade.color.PALE_RED_VIOLET,
                         50,
                         width=SCREEN_WIDTH,
-                        align="center")
+                        align="center"
+                        )
 
+    def draw_instructions(self):
 
-   def on_draw(self):
+        arcade.draw_text("Appuyer sur une image pour faire une attaque!",
+                         0,
+                         SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4,
+                         arcade.color.PALE_AQUA,
+                         50,
+                         width=SCREEN_WIDTH,
+                         align="center")
+
+    def on_draw(self):
 
        arcade.start_render()
 
@@ -165,10 +168,12 @@ class MyGame(arcade.Window):
        self.player.draw()
        self.draw_computer_attack()
        arcade.draw_rectangle_outline(1000, 170, 154, 154, arcade.color.DARK_RED, 3, 0)
-       self.draw_instructions()
+       if self.game_state == GameState.NOT_STARTED:
+           self.draw_instructions()
 
        self.draw_possible_attack()
-       #self.draw_scores()
+       if self.game_state != GameState.NOT_STARTED:
+           self.draw_scores()
        #self.rock.draw()
        #arcade.draw_rectangle_outline(150, 170, 154, 154, arcade.color.DARK_RED, 3, 0)
        #self.paper.draw()
@@ -179,8 +184,7 @@ class MyGame(arcade.Window):
        #afficher le résultat de la partie si l'ordinateur a joué (ROUND_DONE)
        arcade.finish_render()
 
-
-   def on_update(self, delta_time):
+    def on_update(self, delta_time):
 
        self.rock.update()
        self.paper.update()
@@ -209,8 +213,7 @@ class MyGame(arcade.Window):
        #si le joueur a choisi une attaque, générer une attaque de l'ordinateur et valider la victoire
        #changer l'état de jeu si nécessaire (GAME_OVER)
 
-
-   def on_key_press(self, key, key_modifiers):
+    def on_key_press(self, key, key_modifiers):
        self.game_state = GameState.NOT_STARTED
        if key == arcade.key.SPACE:
            if self.game_state == GameState.NOT_STARTED:
@@ -224,8 +227,7 @@ class MyGame(arcade.Window):
            elif self.game_state == GameState.GAME_OVER:
                 pass
 
-
-   def reset_round(self):
+    def reset_round(self):
        """
        Réinitialiser les variables qui ont été modifiées
        """
@@ -237,7 +239,7 @@ class MyGame(arcade.Window):
 
        pass
 
-   def on_mouse_press(self, x, y, button, key_modifiers):
+    def on_mouse_press(self, x, y, button, key_modifiers):
 
 
        # Rappel que si le joueur choisi une attaque, self.player_attack_chosen = True
