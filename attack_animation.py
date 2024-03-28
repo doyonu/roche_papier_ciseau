@@ -7,12 +7,6 @@ class AttackType(Enum):
     PAPER = 1,
     SCISSORS = 2
 
-player_attack_type = {
-    0: "roche",
-    1: "papier",
-    2: "ciseauX"
-}
-
 
 class AttackAnimation(arcade.Sprite):
     ATTACK_SCALE = 0.5
@@ -40,11 +34,12 @@ class AttackAnimation(arcade.Sprite):
                 arcade.load_texture("assets/scissors-close.png"),
             ]
 
-            self.scale = self.ATTACK_SCALE
-            self.current_texture = 0
-            self.set_texture(self.current_texture)
+        self.scale = self.ATTACK_SCALE
+        self.current_texture = 0
+        self.set_texture(self.current_texture)
 
     def on_update(self, delta_time: float = 1 / 60):
+
         # Update the animation.
         self.time_since_last_swap += delta_time
         if self.time_since_last_swap > self.animation_update_time:
